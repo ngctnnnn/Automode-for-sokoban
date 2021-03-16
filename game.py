@@ -21,13 +21,14 @@ def move( threadName, delay, strategy):
             press('down')
         if step in ['U','u']:
             press('up')
-        # time.sleep(0.2)
+            
+            
 class Game:
     def __init__(self, window):
         self.window = window
         self.load_textures()
         self.player = None
-        self.index_level = 10
+        self.index_level = 1
         self.load_level()
         self.play = True
         self.scores = Scores(self)
@@ -81,9 +82,11 @@ class Game:
             if event.key == K_r:
                 # Restart current level
                 self.load_level()
+
             if event.key == K_l:
                 # Cancel last move
                 self.level.cancel_last_move(self.player, self.player_interface)
+
         if event.type == MOUSEBUTTONUP:
             self.player_interface.click(event.pos, self.level, self)
         if event.type == MOUSEMOTION:
@@ -113,12 +116,15 @@ class Game:
 
         return nb_missing_target == 0
 
+    #I seperated writing to files for 3 others algorithms
     def auto_move(self):
+        #dfs
         # strategy = get_move(self.level.structure[:-1], self.level.position_player, 'dfs')
         # #save game's strategies
         # with open("assets/strategies/dfs/Level_" + str(self.index_level) + ".txt", 'w+') as solver_file:
         #     for listitem in strategy:
         #         solver_file.write('%s, ' % listitem)
+
 
         #bfs
         # strategy = get_move(self.level.structure[:-1], self.level.position_player, 'bfs')
@@ -127,6 +133,8 @@ class Game:
         #     for listitem in strategy:
         #         solver_file.write('%s, ' % listitem)
 
+
+        #ucs
         strategy = get_move(self.level.structure[:-1], self.level.position_player, 'ucs') 
         # save game's strategies
         with open("assets/strategies/ucs/Level_" + str(self.index_level) + ".txt", 'w+') as solver_file:

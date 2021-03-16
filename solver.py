@@ -124,10 +124,9 @@ def isFailed(posBox):
                 elif newBoard[1] in posBox and newBoard[6] in posBox and newBoard[2] in posWalls and newBoard[3] in posWalls and newBoard[8] in posWalls: return True
     return False
 
-"""Implement all approcahes"""
-
+#DFS algorithm
+#The details explanation for some general line I put on the UCS part
 def depthFirstSearch(gameState):
-    """Implement depthFirstSearch approach"""
     beginBox = PosOfBoxes(gameState)
     beginPlayer = PosOfPlayer(gameState)
 
@@ -136,24 +135,31 @@ def depthFirstSearch(gameState):
     exploredSet = set()
     actions = [[0]] 
     temp = []
+
     while frontier:
         node = frontier.pop()
         node_action = actions.pop()
+    
         if isEndState(node[-1][-1]):
             temp += node_action[1:]
             break
+    
         if node[-1] not in exploredSet:
             exploredSet.add(node[-1])
+    
             for action in legalActions(node[-1][0], node[-1][1]):
                 newPosPlayer, newPosBox = updateState(node[-1][0], node[-1][1], action)
+    
                 if isFailed(newPosBox):
                     continue
+    
                 frontier.append(node + [(newPosPlayer, newPosBox)])
                 actions.append(node_action + [action[-1]])
+    
     return temp
 
 
-#DFS algorithm
+#BFS algorithm
 def breadthFirstSearch(gameState):
     beginBox = PosOfBoxes(gameState)
     beginPlayer = PosOfPlayer(gameState)
@@ -164,27 +170,35 @@ def breadthFirstSearch(gameState):
     exploredSet = set()
     temp = []
 
-    ### Implement breadthFirstSearch here
+
     while frontier:
-        node = frontier.popleft()
+        #the difference between dfs code and bfs code is that:
+        #dfs use deque.pop(), which means pop the rightmost elements due to the stack's concept
+        #bfs use deque.popleft(), which means pop the leftmost elements due to the queue's concept
+        node = frontier.popleft() 
         node_action = actions.popleft()
+
         if isEndState(node[-1][-1]):
             temp += node_action[1:]
             break 
+        
         if node[-1] not in exploredSet:
             exploredSet.add(node[-1])
+        
             for action in legalActions(node[-1][0], node[-1][1]):
                 newPosPlayer, newPosBox = updateState(node[-1][0], node[-1][1], action)
+        
                 if isFailed(newPosBox):
                     continue
+        
                 frontier.append(node + [(newPosPlayer, newPosBox)])
                 actions.append(node_action + [action[-1]])
     return temp
     
 
-#Uniform Cost Search Algorithm    
+#Uniform Cost Search Algorithm 
 class PriorityQueue:
-    """Define a PriorityQueue data structure that will be used"""
+    #a priorityy queue using the heap method
     def  __init__(self):
         self.Heap = []
         self.Count = 0
@@ -207,45 +221,52 @@ def get_cost(actions):
     return actions.count('l') + actions.count('r') + actions.count('u') + actions.count('d')
 
 def uniformCostSearch(gameState):
-    """Implement uniformCostSearch approach"""
+    #initialize environment and variables
     beginBox = PosOfBoxes(gameState)
     beginPlayer = PosOfPlayer(gameState)
-
     startState = (beginPlayer, beginBox)
 
+    #create a Priority Queue to take the minumum cost from action space
     frontier = PriorityQueue()
     frontier.push([startState], 0)
     
     exploredSet = set()
-    
     actions = PriorityQueue()
     actions.push([0], 0)
     
     cost = 0
     temp = []
     
-    ### Implement uniform cost search here
-    while frontier:
-        node = frontier.pop()
-        node_action = actions.pop()
+    while frontier: #while still exists the action in the queue
+        node = frontier.pop()       #take the state node out of the queue 
+        node_action = actions.pop() #take a legal action from action space
 
+        #if the game is finished, save the whole process to the temp list and exit from the loop
         if isEndState(node[-1][-1]):
             temp += node_action[1:]
             break
 
+        #if the graph is yet visited
         if node[-1] not in exploredSet:
             exploredSet.add(node[-1])
+
+            #choose one legal actions to try
             for action in legalActions(node[-1][0], node[-1][1]):
+                #update new position after choose action
                 newPosPlayer, newPosBox = updateState(node[-1][0], node[-1][1], action)
 
+                #if the algorithm is terminated then back to loop
                 if isFailed(newPosBox):
                     continue
 
+                #or else
+                #put the new state node into the queue
                 frontier.push(node + [(newPosPlayer, newPosBox)], cost + get_cost(action))
+                #put the action node into the priority queue and take the cost as the priority number
                 actions.push(node_action + [action[-1]], cost + get_cost(action))
     return temp
 
-"""Read command"""
+
 def readCommand(argv):
     from optparse import OptionParser
     
@@ -265,7 +286,6 @@ def readCommand(argv):
 def get_move(layout, player_pos, method):
     time_start = time.time()
     global posWalls, posGoals
-    # layout, method = readCommand(sys.argv[1:]).values()
     gameState = transferToGameState2(layout, player_pos)
     posWalls = PosOfWalls(gameState)
     posGoals = PosOfGoals(gameState)
