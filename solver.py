@@ -14,7 +14,9 @@ def transferToGameState(layout):
     layout = [x.replace('\n','') for x in layout]
     layout = [','.join(layout[i]) for i in range(len(layout))]
     layout = [x.split(',') for x in layout]
+
     maxColsNum = max([len(x) for x in layout])
+
     for irow in range(len(layout)):
         for icol in range(len(layout[irow])):
             if layout[irow][icol] == ' ': layout[irow][icol] = 0   # free space
@@ -63,6 +65,7 @@ def isEndState(posBox):
 def isLegalAction(action, posPlayer, posBox):
     """Check if the given action is legal"""
     xPlayer, yPlayer = posPlayer
+
     if action[-1].isupper(): # the move was a push
         x1, y1 = xPlayer + 2 * action[0], yPlayer + 2 * action[1]
     else:
@@ -173,16 +176,19 @@ def depthFirstSearch(gameState):
 
 #BFS algorithm
 def breadthFirstSearch(gameState):
+    #initialize algorithm
     beginBox = PosOfBoxes(gameState)
     beginPlayer = PosOfPlayer(gameState)
 
     startState = (beginPlayer, beginBox) # e.g. ((2, 2), ((2, 3), (3, 4), (4, 4), (6, 1), (6, 4), (6, 5)))
+    
+    #use queue type, I used deque then take actions with the leftmost elements in the deque but not the rightmost
     frontier = collections.deque([[startState]]) # store states
     actions = collections.deque([[0]]) # store actions
     exploredSet = set()
     temp = []
 
-
+    #while the queue still exists
     while frontier:
         #the difference between dfs code and bfs code is that:
         #dfs use deque.pop(), which means pop the rightmost elements due to the stack's concept
@@ -190,6 +196,8 @@ def breadthFirstSearch(gameState):
         node = frontier.popleft() 
         node_action = actions.popleft()
 
+        #check whether the algorithm is ended sucessfully
+        #then return the actions series 
         if isEndState(node[-1][-1]):
             temp += node_action[1:]
             break 
