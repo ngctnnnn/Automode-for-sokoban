@@ -18,6 +18,7 @@ class PlayerInterface:
 
     def click(self, pos_click, level, game):
         x = pos_click[0]
+        
         y = pos_click[1]
 
         # Cancel last move

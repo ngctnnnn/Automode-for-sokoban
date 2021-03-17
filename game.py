@@ -28,7 +28,7 @@ class Game:
         self.window = window
         self.load_textures()
         self.player = None
-        self.index_level = 1
+        self.index_level = 20
         self.load_level()
         self.play = True
         self.scores = Scores(self)
@@ -58,9 +58,11 @@ class Game:
             self.update_screen()
 
     def process_event(self, event):
+
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
+
         if event.type == KEYDOWN:
             if event.key == K_ESCAPE:
                 # Quit game
@@ -72,9 +74,11 @@ class Game:
                 if self.has_win():
                     self.index_level += 1
 
-                    #exit when level 18
-                    if (self.index_level == 19):
-                        self.index_level = 1
+                    #when finished all rounds
+                    if (self.index_level > 20):
+                        print("COMPLETED ALL ROUNDS")
+                        pygame.quit()
+                        sys.exit()
 
                     self.scores.save()
                     self.load_level()

@@ -72,30 +72,42 @@ def isLegalAction(action, posPlayer, posBox):
 def legalActions(posPlayer, posBox):
     """Return all legal actions for the agent in the current game state"""
     allActions = [[-1,0,'u','U'],[1,0,'d','D'],[0,-1,'l','L'],[0,1,'r','R']]
+
     xPlayer, yPlayer = posPlayer
     legalActions = []
+
     for action in allActions:
         x1, y1 = xPlayer + action[0], yPlayer + action[1]
+
         if (x1, y1) in posBox: # the move was a push
             action.pop(2) # drop the little letter
+
         else:
             action.pop(3) # drop the upper letter
+
         if isLegalAction(action, posPlayer, posBox):
             legalActions.append(action)
+
         else: 
             continue     
+    
     return tuple(tuple(x) for x in legalActions) # e.g. ((0, -1, 'l'), (0, 1, 'R'))
 
 def updateState(posPlayer, posBox, action):
     """Return updated game state after an action is taken"""
     xPlayer, yPlayer = posPlayer # the previous position of player
+
     newPosPlayer = [xPlayer + action[0], yPlayer + action[1]] # the current position of player
+    
     posBox = [list(x) for x in posBox]
+   
     if action[-1].isupper(): # if pushing, update the position of box
         posBox.remove(newPosPlayer)
         posBox.append([xPlayer + 2 * action[0], yPlayer + 2 * action[1]])
+    
     posBox = tuple(tuple(x) for x in posBox)
     newPosPlayer = tuple(newPosPlayer)
+    
     return newPosPlayer, posBox
 
 def isFailed(posBox):
