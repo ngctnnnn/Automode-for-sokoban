@@ -286,6 +286,15 @@ def uniformCostSearch(gameState):
                 actions.push(node_action + [action[-1]], cost + get_cost(action))
     return temp
 
+#Greedy search
+def greedy(gameState):
+    temp = []
+    return temp 
+
+#A* search
+def a_star(gameState):
+    temp = []
+    return temp
 
 def readCommand(argv):
     from optparse import OptionParser
@@ -315,6 +324,10 @@ def get_move(layout, player_pos, method):
         result = breadthFirstSearch(gameState)    
     elif method == 'ucs':
         result = uniformCostSearch(gameState)
+    elif method == 'greedy':
+        result = greedy(gameState)
+    elif method == 'a_star':
+        result = a_star(gameState)
     else:
         raise ValueError('Invalid method.')
     time_end=time.time()
