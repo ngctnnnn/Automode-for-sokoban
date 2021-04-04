@@ -28,7 +28,7 @@ class Game:
         self.window = window
         self.load_textures()
         self.player = None
-        self.index_level = 10
+        self.index_level = 6
         self.load_level()
         self.play = True
         self.scores = Scores(self)
@@ -139,17 +139,17 @@ class Game:
 
 
         #ucs
-        strategy = get_move(self.level.structure[:-1], self.level.position_player, 'ucs') 
-        # save game's strategies
-        with open("assets/strategies/ucs/Level_" + str(self.index_level) + ".txt", 'w+') as solver_file:
-            for listitem in strategy:
-                solver_file.write('%s, ' % listitem)
+        # strategy = get_move(self.level.structure[:-1], self.level.position_player, 'ucs') 
+        # # save game's strategies
+        # with open("assets/strategies/ucs/Level_" + str(self.index_level) + ".txt", 'w+') as solver_file:
+        #     for listitem in strategy:
+        #         solver_file.write('%s, ' % listitem)
 
-        if strategy is not None:
-            try:
-                _thread.start_new_thread( move, ("Thread-1", 2, strategy) )
-            except:
-                print ("Error: unable to start thread")
+        # if strategy is not None:
+        #     try:
+        #         _thread.start_new_thread( move, ("Thread-1", 2, strategy) )
+        #     except:
+        #         print ("Error: unable to start thread")
 
         #greedy
         strategy = get_move(self.level.structure[:-1], self.level.position_player, 'greedy')
@@ -163,14 +163,14 @@ class Game:
                 print("Error: unable to start thread")
 
         #A* 
-        strategy = get_move(self.level.structure[:-1], self.level.position_player, 'a_star')
-        with open("assets/strategies/a_star/Level_" + str(self.index_level) + ".txt", 'w+') as solver_file:
-            for listitem in strategy:
-                solver_file.write('%s, ' % listitem)
-        if strategy is not None:
-            try:
-                _thread.start_new_thread(move, ("Thread-1", 2, strategy))
-            except:
-                print("Error: unable to start thread")
+        # strategy = get_move(self.level.structure[:-1], self.level.position_player, 'a_star')
+        # with open("assets/strategies/a_star/Level_" + str(self.index_level) + ".txt", 'w+') as solver_file:
+        #     for listitem in strategy:
+        #         solver_file.write('%s, ' % listitem)
+        # if strategy is not None:
+        #     try:
+        #         _thread.start_new_thread(move, ("Thread-1", 2, strategy))
+        #     except:
+        #         print("Error: unable to start thread")
 
 # Define a function for the thread

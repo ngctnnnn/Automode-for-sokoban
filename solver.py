@@ -287,8 +287,52 @@ def uniformCostSearch(gameState):
     return temp
 
 #Greedy search
+gamma = 10/7
 def greedy(gameState):
     temp = []
+    beginBox = PosOfBoxes(gameState)
+    beginPlayer = PosOfPlayer(gameState)
+    startState = (beginPlayer, beginBox)
+
+    #create a Priority Queue to take the minumum cost from action space
+    frontier = PriorityQueue()
+    frontier.push([startState], 0)
+    
+    exploredSet = set()
+    actions = PriorityQueue()
+    actions.push([0], 0)
+    
+    cost = 0
+    
+    while frontier: #while still exists the action in the queue
+        cnt = 0
+        node = frontier.pop()       #take the state node out of the queue 
+        node_action = actions.pop() #take a legal action from action space
+
+        #if the game is finished, save the whole process to the temp list and exit from the loop
+        if isEndState(node[-1][-1]):
+            temp += node_action[1:]
+            break
+
+        #if the graph is yet visited
+        if node[-1] not in exploredSet:
+            exploredSet.add(node[-1])
+
+            #choose one legal actions to try    
+            for action in legalActions(node[-1][0], node[-1][1]):
+                cnt += 1
+                #update new position after choose action
+                newPosPlayer, newPosBox = updateState(node[-1][0], node[-1][1], action)
+
+                #if the algorithm is terminated then back to loop
+                if isFailed(newPosBox):
+                    continue
+
+                #or else
+                #put the new state node into the queue
+                frontier.push(node + [(newPosPlayer, newPosBox)], cost + get_cost(action)*(gamma**cnt))
+                #put the action node into the priority queue and take the cost as the priority number
+                actions.push(node_action + [action[-1]], cost + get_cost(action)*(gamma ** cnt))
     return temp 
 
 #A* search
