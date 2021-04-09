@@ -151,7 +151,7 @@ class Game:
         #     except:
         #         print ("Error: unable to start thread")
 
-        #greedy
+        # #greedy
         strategy = get_move(self.level.structure[:-1], self.level.position_player, 'greedy')
         with open("assets/strategies/greedy/Level_" + str(self.index_level) + ".txt", 'w+') as solver_file:
             for listitem in strategy:

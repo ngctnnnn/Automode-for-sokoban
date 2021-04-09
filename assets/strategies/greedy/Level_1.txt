@@ -1,1 +1,1 @@
-r, r, U, U, d, L, d, l, U, U, r, u, R, 
+r, U, U, d, R, d, r, U, U, l, u, L, 

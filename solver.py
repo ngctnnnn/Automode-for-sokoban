@@ -287,7 +287,7 @@ def uniformCostSearch(gameState):
     return temp
 
 #Greedy search
-gamma = 10/7
+gamma = .7
 def greedy(gameState):
     temp = []
     beginBox = PosOfBoxes(gameState)
@@ -330,9 +330,9 @@ def greedy(gameState):
 
                 #or else
                 #put the new state node into the queue
-                frontier.push(node + [(newPosPlayer, newPosBox)], cost + get_cost(action)*(gamma**cnt))
+                frontier.push(node + [(newPosPlayer, newPosBox)], cost + get_cost(action)*gamma)
                 #put the action node into the priority queue and take the cost as the priority number
-                actions.push(node_action + [action[-1]], cost + get_cost(action)*(gamma ** cnt))
+                actions.push(node_action + [action[-1]], cost + get_cost(action)*gamma) 
     return temp 
 
 #A* search
