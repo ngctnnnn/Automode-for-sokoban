@@ -2,6 +2,7 @@ import sys
 import collections
 import numpy as np
 import heapq
+import math
 import time
 import numpy as np
 global posWalls, posGoals
@@ -281,14 +282,14 @@ def uniformCostSearch(gameState):
 
                 #or else
                 #put the new state node into the queue
-                frontier.push(node + [(newPosPlayer, newPosBox)], cost + get_cost(action))
+                frontier.push(node + [(newPosPlayer, newPosBox)], get_cost(action))
                 #put the action node into the priority queue and take the cost as the priority number
-                actions.push(node_action + [action[-1]], cost + get_cost(action))
+                actions.push(node_action + [action[-1]], get_cost(action))
     return temp
 
 #Greedy search
 gamma = .7
-def greedy(gameState):
+def greedyNaive(gameState):
     temp = []
     beginBox = PosOfBoxes(gameState)
     beginPlayer = PosOfPlayer(gameState)
@@ -330,10 +331,169 @@ def greedy(gameState):
 
                 #or else
                 #put the new state node into the queue
-                frontier.push(node + [(newPosPlayer, newPosBox)], cost + get_cost(action)*gamma)
+                frontier.push(node + [(newPosPlayer, newPosBox)], get_cost(action)*gamma)
                 #put the action node into the priority queue and take the cost as the priority number
-                actions.push(node_action + [action[-1]], cost + get_cost(action)*gamma) 
+                actions.push(node_action + [action[-1]], get_cost(action)*gamma) 
     return temp 
+
+#Euclidean greedy search
+def euclideanDist(gameState):
+    distance = 0
+    box_position = PosOfBoxes(gameState)
+    goal_position = PosOfGoals(gameState)
+    for i in range(len(box_position)):
+        distance += math.sqrt((goal_position[i][0] - box_position[i][0])**2 + (goal_position[i][1] - box_position[i][1])**2)
+    return distance
+
+def greedy_euclidean(gameState):
+    temp = []
+    beginBox = PosOfBoxes(gameState)
+    beginPlayer = PosOfPlayer(gameState)
+    startState = (beginPlayer, beginBox)
+
+    #create a Priority Queue to take the minumum cost from action space
+    frontier = PriorityQueue()
+    frontier.push([startState], 0)
+    
+    exploredSet = set()
+    actions = PriorityQueue()
+    actions.push([0], 0)
+    
+    cost = 0
+    
+    while frontier: #while still exists the action in the queue
+        cnt = 0
+        node = frontier.pop()       #take the state node out of the queue 
+        node_action = actions.pop() #take a legal action from action space
+
+        #if the game is finished, save the whole process to the temp list and exit from the loop
+        if isEndState(node[-1][-1]):
+            temp += node_action[1:]
+            break
+
+        #if the graph is yet visited
+        if node[-1] not in exploredSet:
+            exploredSet.add(node[-1])
+
+            #choose one legal actions to try    
+            for action in legalActions(node[-1][0], node[-1][1]):
+                cnt += 1
+                #update new position after choose action
+                newPosPlayer, newPosBox = updateState(node[-1][0], node[-1][1], action)
+
+                #if the algorithm is terminated then back to loop
+                if isFailed(newPosBox):
+                    continue
+
+                #or else
+                #put the new state node into the queue
+                frontier.push(node + [(newPosPlayer, newPosBox)], euclideanDist(gameState))
+                #put the action node into the priority queue and take the cost as the priority number
+                actions.push(node_action + [action[-1]], euclideanDist(gameState))
+    return temp
+
+#Mahattan greedy
+def mahattan_distance(gameState):
+    distance = 0
+    box_position = PosOfBoxes(gameState)
+    goal_position = PosOfGoals(gameState)
+    for i in range(len(box_position)):
+        distance += abs(goal_position[i][0] - box_position[i][0]) + abs(goal_position[i][1] - box_position[i][1])
+    return distance
+
+def greedy_mahattan(gameState):
+    temp = []
+    beginBox = PosOfBoxes(gameState)
+    beginPlayer = PosOfPlayer(gameState)
+    startState = (beginPlayer, beginBox)
+
+    #create a Priority Queue to take the minumum cost from action space
+    frontier = PriorityQueue()
+    frontier.push([startState], 0)
+    
+    exploredSet = set()
+    actions = PriorityQueue()
+    actions.push([0], 0)
+    
+    cost = 0
+    
+    while frontier: #while still exists the action in the queue
+        cnt = 0
+        node = frontier.pop()       #take the state node out of the queue 
+        node_action = actions.pop() #take a legal action from action space
+
+        #if the game is finished, save the whole process to the temp list and exit from the loop
+        if isEndState(node[-1][-1]):
+            temp += node_action[1:]
+            break
+
+        #if the graph is yet visited
+        if node[-1] not in exploredSet:
+            exploredSet.add(node[-1])
+
+            #choose one legal actions to try    
+            for action in legalActions(node[-1][0], node[-1][1]):
+                cnt += 1
+                #update new position after choose action
+                newPosPlayer, newPosBox = updateState(node[-1][0], node[-1][1], action)
+
+                #if the algorithm is terminated then back to loop
+                if isFailed(newPosBox):
+                    continue
+
+                #or else
+                #put the new state node into the queue
+                frontier.push(node + [(newPosPlayer, newPosBox)], mahattan_distance(gameState))
+                #put the action node into the priority queue and take the cost as the priority number
+                actions.push(node_action + [action[-1]], mahattan_distance(gameState))
+    return temp
+
+def greedy_combination(gameState):
+    temp = []
+    beginBox = PosOfBoxes(gameState)
+    beginPlayer = PosOfPlayer(gameState)
+    startState = (beginPlayer, beginBox)
+
+    #create a Priority Queue to take the minumum cost from action space
+    frontier = PriorityQueue()
+    frontier.push([startState], 0)
+    
+    exploredSet = set()
+    actions = PriorityQueue()
+    actions.push([0], 0)
+    
+    cost = 0
+    
+    while frontier: #while still exists the action in the queue
+        cnt = 0
+        node = frontier.pop()       #take the state node out of the queue 
+        node_action = actions.pop() #take a legal action from action space
+
+        #if the game is finished, save the whole process to the temp list and exit from the loop
+        if isEndState(node[-1][-1]):
+            temp += node_action[1:]
+            break
+
+        #if the graph is yet visited
+        if node[-1] not in exploredSet:
+            exploredSet.add(node[-1])
+
+            #choose one legal actions to try    
+            for action in legalActions(node[-1][0], node[-1][1]):
+                cnt += 1
+                #update new position after choose action
+                newPosPlayer, newPosBox = updateState(node[-1][0], node[-1][1], action)
+
+                #if the algorithm is terminated then back to loop
+                if isFailed(newPosBox):
+                    continue
+
+                #or else
+                #put the new state node into the queue
+                frontier.push(node + [(newPosPlayer, newPosBox)], (mahattan_distance(gameState) + euclideanDist(gameState)) *gamma)
+                #put the action node into the priority queue and take the cost as the priority number
+                actions.push(node_action + [action[-1]], (mahattan_distance(gameState) + euclideanDist(gameState))*gamma)
+    return temp
 
 #A* search
 def a_star(gameState):
@@ -372,6 +532,12 @@ def get_move(layout, player_pos, method):
         result = greedy(gameState)
     elif method == 'a_star':
         result = a_star(gameState)
+    elif method == 'greedy-euclidean':
+        result = greedy_euclidean(gameState)
+    elif method == 'greedy-mahattan':
+        result = greedy_mahattan(gameState)
+    elif method == 'greedy-comb':
+        result = greedy_combination(gameState)
     else:
         raise ValueError('Invalid method.')
     time_end=time.time()

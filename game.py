@@ -151,20 +151,9 @@ class Game:
         #     except:
         #         print ("Error: unable to start thread")
 
-        # #greedy
-        strategy = get_move(self.level.structure[:-1], self.level.position_player, 'greedy')
-        with open("assets/strategies/greedy/Level_" + str(self.index_level) + ".txt", 'w+') as solver_file:
-            for listitem in strategy:
-                solver_file.write('%s, ' % listitem)
-        if strategy is not None:
-            try:
-                _thread.start_new_thread(move, ("Thread-1", 2, strategy))
-            except:
-                print("Error: unable to start thread")
-
-        #A* 
-        # strategy = get_move(self.level.structure[:-1], self.level.position_player, 'a_star')
-        # with open("assets/strategies/a_star/Level_" + str(self.index_level) + ".txt", 'w+') as solver_file:
+        # naive greedy
+        # strategy = get_move(self.level.structure[:-1], self.level.position_player, 'greedyNaive')
+        # with open("assets/strategies/greedy/Level_" + str(self.index_level) + ".txt", 'w+') as solver_file:
         #     for listitem in strategy:
         #         solver_file.write('%s, ' % listitem)
         # if strategy is not None:
@@ -172,5 +161,53 @@ class Game:
         #         _thread.start_new_thread(move, ("Thread-1", 2, strategy))
         #     except:
         #         print("Error: unable to start thread")
+
+        # euclidean greedy
+        # strategy = get_move(self.level.structure[:-1], self.level.position_player, 'greedy-euclidean')
+        # with open("assets/strategies/greedy-euclidean/Level_" + str(self.index_level) + ".txt", 'w+') as solver_file:
+        #     for listitem in strategy:
+        #         solver_file.write('%s, ' % listitem)
+
+        # if strategy is not None:
+        #     try:
+        #         _thread.start_new_thread( move, ("Thread-1", 2, strategy) )
+        #     except:
+        #         print ("Error: unable to start thread")"
+
+        # Mahattan greedy
+        # strategy = get_move(self.level.structure[:-1], self.level.position_player, 'greedy-mahattan')
+        # with open("assets/strategies/greedy-mahattan/Level_" + str(self.index_level) + ".txt", 'w+') as solver_file:
+        #     for listitem in strategy:
+        #         solver_file.write('%s, ' % listitem)
+
+        # if strategy is not None:
+        #     try:
+        #         _thread.start_new_thread( move, ("Thread-1", 2, strategy) )
+        #     except:
+        #         print ("Error: unable to start thread")
+
+        #greedy combination
+        # strategy = get_move(self.level.structure[:-1], self.level.position_player, 'greedy-comb')
+        # with open("assets/strategies/greedy-comb/Level_" + str(self.index_level) + ".txt", 'w+') as solver_file:
+        #     for listitem in strategy:
+        #         solver_file.write('%s, ' % listitem)
+
+        # if strategy is not None:
+        #     try:
+        #         _thread.start_new_thread( move, ("Thread-1", 2, strategy) )
+        #     except:
+        #         print ("Error: unable to start thread")
+
+
+        #A* 
+        strategy = get_move(self.level.structure[:-1], self.level.position_player, 'a_star')
+        with open("assets/strategies/a_star/Level_" + str(self.index_level) + ".txt", 'w+') as solver_file:
+            for listitem in strategy:
+                solver_file.write('%s, ' % listitem)
+        if strategy is not None:
+            try:
+                _thread.start_new_thread(move, ("Thread-1", 2, strategy))
+            except:
+                print("Error: unable to start thread")
 
 # Define a function for the thread
