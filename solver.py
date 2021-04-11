@@ -337,6 +337,7 @@ def greedyNaive(gameState):
     return temp 
 
 #Euclidean greedy search
+#the function to estimate the euclidean distance from the boxes to the goals
 def euclideanDist(gameState):
     distance = 0
     box_position = PosOfBoxes(gameState)
@@ -388,11 +389,12 @@ def greedy_euclidean(gameState):
                 #or else
                 #put the new state node into the queue
                 frontier.push(node + [(newPosPlayer, newPosBox)], euclideanDist(gameState))
-                #put the action node into the priority queue and take the cost as the priority number
+                #put the action node into the priority queue and take the Euclidean distance as the priority number
                 actions.push(node_action + [action[-1]], euclideanDist(gameState))
     return temp
 
 #Mahattan greedy
+#This function is to estimate the Mahattan distance between the boxes and goals
 def mahattan_distance(gameState):
     distance = 0
     box_position = PosOfBoxes(gameState)
@@ -444,10 +446,11 @@ def greedy_mahattan(gameState):
                 #or else
                 #put the new state node into the queue
                 frontier.push(node + [(newPosPlayer, newPosBox)], mahattan_distance(gameState))
-                #put the action node into the priority queue and take the cost as the priority number
+                #put the action node into the priority queue and take the Mahattan distance as the priority number
                 actions.push(node_action + [action[-1]], mahattan_distance(gameState))
     return temp
 
+#The combination from 3 different greedy strategies above
 def greedy_combination(gameState):
     temp = []
     beginBox = PosOfBoxes(gameState)
@@ -491,7 +494,8 @@ def greedy_combination(gameState):
                 #or else
                 #put the new state node into the queue
                 frontier.push(node + [(newPosPlayer, newPosBox)], (mahattan_distance(gameState) + euclideanDist(gameState)) *gamma)
-                #put the action node into the priority queue and take the cost as the priority number
+                #put the action node into the priority queue
+                #take the Mahattan and Euclidean distance with a discounted factor gamma as the priority number
                 actions.push(node_action + [action[-1]], (mahattan_distance(gameState) + euclideanDist(gameState))*gamma)
     return temp
 
@@ -539,7 +543,7 @@ def a_star(gameState):
                 #or else
                 #put the new state node into the queue
                 frontier.push(node + [(newPosPlayer, newPosBox)], euclideanDist(gameState) + get_cost(action))
-                #put the action node into the priority queue and take the cost as the priority number
+                #put the action node into the priority queue and take the Euclidean distance and cost function from UCS as the priority number
                 actions.push(node_action + [action[-1]], euclideanDist(gameState) + get_cost(action))
     return temp
 
